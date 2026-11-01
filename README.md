@@ -8,23 +8,49 @@ These are the companion files for the Udemy course **Ansible for DevOps automati
 
 </div>
 
-## Before you start
+## ansible-core 2.20 note
+
+The videos were recorded on an older ansible-core. These files are updated for **ansible-core 2.20**, which needs **Python 3.12+ on the control node** (Ubuntu 24.04 has it). The change students hit most often is in the inventory: use `ansible_ssh_private_key_file=~/.ssh/id_rsa`, not `ansible_private_key` (since 2.19 that variable means the key *contents*, and a path there fails with `Cannot utilize private_key with SSH_AGENT disabled`). Details: [docs/ansible-core-2.19-2.20-changes.md](docs/ansible-core-2.19-2.20-changes.md). What differs from the videos: [CHANGES.md](CHANGES.md).
+
+## Quick start
+
+### 1. Install Ansible on your machine
 
 ```bash
 python3 -m venv ~/ansible-env && source ~/ansible-env/bin/activate
-pip install ansible            # ansible-core 2.20 needs Python 3.12+ on the control node
-ansible --version
+pip install ansible
+ansible --version            # should show ansible-core 2.20.x
 ```
+
+### 2. Create the lab VM with Multipass
+
+```bash
+sudo snap install multipass                  # macOS: brew install --cask multipass
+ssh-keygen                                   # only if you have no key yet
+cat ~/.ssh/id_rsa.pub                        # paste it into section01-setup/ansible_multipass.yaml
+multipass launch -n ansiblemain --cloud-init section01-setup/ansible_multipass.yaml
+multipass info ansiblemain                   # note the IPv4 address
+ssh -i ~/.ssh/id_rsa ansibleadmin@<vm_ip>    # check you can log in
+```
+
+Launch more VMs the same way (change `-n`) when a lab needs several hosts. Full steps: [section01-setup/README.md](section01-setup/README.md).
+
+### 3. Run a lab
 
 In each lab folder:
 
 ```bash
 cp hosts.example hosts                       # or inventory/hosts.example -> inventory/hosts; put your VM IPs in it
+ansible -i hosts all -m ansible.builtin.ping # check the connection first
 ansible-galaxy collection install -r requirements.yml   # where the folder has one
 ansible-playbook -i hosts playbook.yaml      # file name per folder, see the README there
 ```
 
-What changed in Ansible since the recording: **[docs/ansible-core-2.19-2.20-changes.md](docs/ansible-core-2.19-2.20-changes.md)**. What changed in these files compared with the videos: **[CHANGES.md](CHANGES.md)**.
+<div dir="rtl" markdown="1">
+
+**بالعربي:** نزّل Ansible، اعمل VM بـ Multipass باستخدام `section01-setup/ansible_multipass.yaml` بعد ما تحط فيه الـ public key بتاعك، وبعدين في كل فولدر انسخ `hosts.example` لـ `hosts` وحط IP الـ VM. استخدم `ansible_ssh_private_key_file` مش `ansible_private_key`.
+
+</div>
 
 ## Curriculum map
 
@@ -47,7 +73,12 @@ What changed in Ansible since the recording: **[docs/ansible-core-2.19-2.20-chan
 | | Deploying an ASP.NET application | `section05-windows/winrm/roles/aspnet/` ([text](docs/windows-aspnet-role.md)) |
 | 6 Ansible Vault | Encrypting files and values | `section06-vault/` ([text](docs/vault.md)) |
 
-`upload/` holds copies of the files attached to the Udemy lectures. Students can ignore it.
+### Where is App.css?
+
+The stylesheet for the React app in **Creating the web server 01** is at
+[`section04-mern/mernstack/roles/webserver/files/App.css`](section04-mern/mernstack/roles/webserver/files/App.css). The webserver role copies it into the app's `src/` folder. A copy is also in `upload/creating-the-web-server-01/App.css`.
+
+`upload/` holds copies of the files attached to the Udemy lectures (for example the hosts-file notes and the ansible-core handout as PDF in `upload/the-hosts-file/`). Students can ignore it.
 
 ## Checked with
 
@@ -60,3 +91,7 @@ The labs were recorded on Ubuntu 24.04 Multipass VMs and Windows Server with Win
 ## Secrets
 
 No real secrets are stored here. `hosts`, `inventory/hosts`, `vault_password.txt` and generated password files are git-ignored. Lab passwords such as `mongodb_root_password` are placeholders. Put real values in Ansible Vault (Section 6) or pass them with `-e`. The Windows inventory reads the password from the `ANSIBLE_WINRM_PASSWORD` environment variable.
+
+## License
+
+The files in this repo are under the [MIT License](LICENSE). The course videos and the Udemy course itself are not covered by this license.
