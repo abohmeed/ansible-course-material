@@ -1,52 +1,65 @@
-/* App.css - "Creating the web server 01" (Section 4, MERN). Save as roles/webserver/files/App.css; it is copied as is, no template needed. */
+/* App.css for Creating the web server 01
+   Place in roles/webserver/files/App.css (copied as-is by Ansible) */
+
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #14b8a6;
+}
+
+* { box-sizing: border-box; }
+
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
   margin: 0;
-  padding: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.6;
 }
 
 header {
-  background-color: #6200ea;
-  color: white;
-  padding: 20px 0;
+  padding: 3rem 1.5rem 2rem;
   text-align: center;
+  border-bottom: 3px solid var(--accent);
+  background: var(--surface);
 }
 
 h1 {
-  margin: 10px 0;
-  font-size: 2.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 2.25rem;
+  letter-spacing: -0.02em;
+  color: var(--accent);
 }
 
 p {
-  font-size: 1.2rem;
-  margin: 20px 0;
-}
-
-footer {
-  margin-top: 20px;
-  font-size: 0.9rem;
-  color: #666;
+  margin: 0 auto;
+  max-width: 40rem;
+  color: var(--muted);
 }
 
 .img-container {
-  margin: 20px auto;
-  width: 100px;
-  height: 100px;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
 }
 
 img {
-  width: 100%;
-  height: auto;
-  animation: spin 10s linear infinite;
+  width: 160px;
+  height: 160px;
+  animation: float 3s ease-in-out infinite;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+footer {
+  padding: 1.25rem;
+  text-align: center;
+  border-top: 1px solid var(--surface);
+  font-size: 0.875rem;
 }
