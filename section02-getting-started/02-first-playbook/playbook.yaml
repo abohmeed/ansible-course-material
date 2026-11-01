@@ -1,0 +1,24 @@
+# Lecture: Our first Ansible playbook (Section 2)
+# Run: ansible-playbook -i ../01-hosts-file/hosts playbook.yaml
+#
+# The video prints {{ ansible_nodename }}, {{ ansible_distribution }} ... ("injected" facts).
+# Those still work but are deprecated from ansible-core 2.20 and will stop working by default in 2.24.
+# The ansible_facts['...'] form below works on every version.
+---
+- name: First playbook
+  hosts: my_hosts
+  gather_facts: true
+  become: true
+  become_method: ansible.builtin.sudo
+  tasks:
+    - name: Print some host info
+      ansible.builtin.debug:
+        msg: >-
+          The hostname is {{ ansible_facts['nodename'] }} and it is running
+          {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+
+    - name: Update the packages to the latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        update_cache: true

@@ -1,4 +1,6 @@
-work
+# Setting up WinRM on Windows (Section 5)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section05-windows/winrm/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 ## Connect to the instance and enable WinRM
 
@@ -14,10 +16,10 @@ $dnsName = "paste-machine-hostname"
 
 # Generate Self-Signed Certificate
 $cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My `
-    -DnsName $dnsName `
-    -KeyLength 2048 `
-    -NotAfter (Get-Date).AddYears(5) `
-    -FriendlyName "WinRM HTTPS Certificate"
+    -DnsName $dnsName `
+    -KeyLength 2048 `
+    -NotAfter (Get-Date).AddYears(5) `
+    -FriendlyName "WinRM HTTPS Certificate"
 $certThumbprint = $cert.Thumbprint
 Write-Output "Certificate Thumbprint: $certThumbprint"
 
@@ -29,10 +31,10 @@ winrm enumerate winrm/config/Listener
 
 # Configure Firewall Rule
 New-NetFirewallRule -DisplayName "Allow WinRM over HTTP" `
-    -Direction Inbound -Protocol TCP -LocalPort 5985 -Action Allow
+    -Direction Inbound -Protocol TCP -LocalPort 5985 -Action Allow
 
 New-NetFirewallRule -DisplayName "Allow WinRM over HTTPS" `
-    -Direction Inbound -Protocol TCP -LocalPort 5986 -Action Allow
+    -Direction Inbound -Protocol TCP -LocalPort 5986 -Action Allow
 
 # Enable and Start WinRM Service
 Enable-PSRemoting -Force

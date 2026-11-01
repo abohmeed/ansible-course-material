@@ -1,0 +1,5 @@
+# inventory/hosts - copy to inventory/hosts
+# Export the Administrator password first:  export ANSIBLE_WINRM_PASSWORD='paste_the_password'
+# WinRM over HTTPS (port 5986) with the self-signed certificate created by setup-winrm.ps1
+[winhost]
+winhost ansible_host=paste_the_hostname ansible_user=Administrator ansible_password="{{ lookup('ansible.builtin.env', 'ANSIBLE_WINRM_PASSWORD') }}" ansible_connection=winrm ansible_winrm_transport=ntlm ansible_winrm_server_cert_validation=ignore

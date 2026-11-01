@@ -1,0 +1,13 @@
+---
+# Names (roles, variables) are kept exactly as typed in the videos so students can follow along.
+# These rules flag style only, not bugs, so they are skipped for this teaching repo.
+skip_list:
+  - role-name
+  - var-naming[no-role-prefix]
+  - package-latest
+  - yaml[truthy]
+exclude_paths:
+  - .git/
+  - docs/
+  - upload/
+  - "**/requirements.yml"

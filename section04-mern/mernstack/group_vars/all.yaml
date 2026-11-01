@@ -1,0 +1,6 @@
+# group_vars/all.yaml - applies to every host
+users:
+  - name: mern
+    group: mern
+    state: present
+    key: "/tmp/mern_id_rsa"

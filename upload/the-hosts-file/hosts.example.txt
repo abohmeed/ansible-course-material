@@ -1,0 +1,20 @@
+# Lecture: The hosts file (Section 2)
+# Copy to "hosts" and replace the IP with the one from: multipass info ansiblemain
+#
+# IMPORTANT (ansible-core 2.19+): use ansible_ssh_private_key_file (or ansible_private_key_file).
+# Do NOT use ansible_private_key: since 2.19 that variable means the key CONTENTS, not a path, and fails with
+#   "Cannot utilize private_key with SSH_AGENT disabled".
+
+# 1) One host, all connection settings on the same line
+# ansiblemain ansible_host=10.173.4.156 ansible_user=ansibleadmin ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+# 2) A host plus a group with shared variables (used for the rest of the course)
+ansiblemain ansible_host=10.173.4.156
+
+[my_hosts]
+ansiblemain
+
+[my_hosts:vars]
+ansible_connection=ssh
+ansible_user=ansibleadmin
+ansible_ssh_private_key_file=~/.ssh/id_rsa

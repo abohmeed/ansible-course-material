@@ -1,0 +1,52 @@
+/* App.css - "Creating the web server 01" (Section 4, MERN). Save as roles/webserver/files/App.css; it is copied as is, no template needed. */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #6200ea;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+h1 {
+  margin: 10px 0;
+  font-size: 2.5rem;
+}
+
+p {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+footer {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.img-container {
+  margin: 20px auto;
+  width: 100px;
+  height: 100px;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

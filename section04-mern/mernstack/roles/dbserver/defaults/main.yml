@@ -1,0 +1,13 @@
+---
+# defaults file for roles/dbserver
+mongodb_version: "8.0"
+mongodb_repo_key: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
+mongodb_repo_url: >-
+  https://repo.mongodb.org/apt/{{ ansible_facts['distribution'] | lower }}/{{ ansible_facts['distribution_release'] | lower }}/mongodb-org/{{ mongodb_version }}
+mongodb_port: 27017
+mongodb_bind_ip: "0.0.0.0"
+mongodb_config_path: "/etc/mongod.conf"
+mongodb_data_path: "/var/lib/mongodb"
+mongodb_root_user: root
+# Throwaway lab value. Encrypt it with Ansible Vault (Section 6) for anything real.
+mongodb_root_password: password

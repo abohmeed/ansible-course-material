@@ -1,0 +1,8 @@
+---
+# defaults file for roles/windows_user_management
+# The password lookup generates the password once and stores it in group_vars/generated_password (keep that file private).
+generated_password: "{{ lookup('ansible.builtin.password', 'group_vars/generated_password chars=ascii_letters,digits length=30') }}"
+user_name: ahmed
+user_groups:
+  - Users
+  - Administrators

@@ -1,0 +1,50 @@
+---
+- name: Create MongoDB data directory
+  ansible.builtin.file:
+    path: "{{ mongodb_data_path }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+    mode: '0755'
+
+- name: Template MongoDB configuration file
+  ansible.builtin.template:
+    src: mongod.conf.j2
+    dest: "{{ mongodb_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart MongoDB
+
+# Fixed: the video checks /root/.mongorc.js but deploys ~/.mongoshrc.js, so on a second run the root user
+# would be created again after authentication is on, and the task fails. Check the file we actually deploy.
+- name: Check if .mongoshrc.js file exists
+  ansible.builtin.stat:
+    path: /root/.mongoshrc.js
+  register: mongorc_file
+
+- name: Create MongoDB root user
+  community.mongodb.mongodb_user:
+    database: "admin"
+    name: "{{ mongodb_root_user }}"
+    password: "{{ mongodb_root_password }}"
+    roles: "root"
+  when: not mongorc_file.stat.exists
+
+- name: Deploy MongoDB .mongoshrc.js file for root user
+  ansible.builtin.template:
+    src: mongoshsrc.js.j2
+    dest: /root/.mongoshrc.js
+    mode: '0600'
+  notify:
+    - Restart MongoDB
+
+- name: Enable authentication in MongoDB
+  ansible.builtin.lineinfile:
+    path: /etc/mongod.conf
+    line: "security:\n  authorization: enabled"
+    insertafter: "^#security:"
+    state: present
+    backup: true
+  notify:
+    - Restart MongoDB

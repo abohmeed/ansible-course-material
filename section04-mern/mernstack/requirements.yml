@@ -1,0 +1,8 @@
+# Collections used by the MERN project. Install with:
+#   ansible-galaxy collection install -r requirements.yml
+# (They ship with the full "ansible" pip package; you only need this with ansible-core alone.)
+collections:
+  - name: community.crypto   # openssh_keypair (common role)
+  - name: ansible.posix      # authorized_key (common role)
+  - name: community.mongodb  # mongodb_user (dbserver role)
+  - name: community.general  # npm (webserver role)

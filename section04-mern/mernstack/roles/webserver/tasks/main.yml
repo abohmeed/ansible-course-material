@@ -1,0 +1,60 @@
+---
+# tasks file for roles/webserver
+- name: Install Node.js and NPM
+  ansible.builtin.apt:
+    pkg:
+      - nodejs
+      - npm
+    state: present
+
+- name: Create the application directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ users.0.name }}"
+    group: "{{ users.0.group }}"
+    mode: '0755'
+
+- name: Install NPM packages
+  community.general.npm:
+    name: "{{ item }}"
+    global: true
+  loop: "{{ npm_packages }}"
+
+- name: Initialize a new React project
+  ansible.builtin.command:
+    cmd: "npx create-react-app {{ app_name }}"
+    chdir: "{{ app_dir }}"
+    creates: "{{ app_dir }}/{{ app_name }}"
+
+- name: Configure React development server to listen on 0.0.0.0
+  ansible.builtin.lineinfile:
+    path: "{{ app_dir }}/{{ app_name }}/.env"
+    line: "HOST=0.0.0.0"
+    create: true
+    mode: '0644'
+
+- name: Deploy custom App.css
+  ansible.builtin.copy:
+    src: App.css
+    dest: "{{ app_dir }}/{{ app_name }}/src/App.css"
+    mode: '0644'
+  when: deploy_custom_page | bool
+
+- name: Deploy custom App.js
+  ansible.builtin.template:
+    src: App.js.j2
+    dest: "{{ app_dir }}/{{ app_name }}/src/App.js"
+    mode: '0644'
+    variable_start_string: "{[%"
+    variable_end_string: "%]}"
+  when: deploy_custom_page | bool
+
+- name: Start the development server (React)
+  ansible.builtin.command:
+    cmd: pm2 start npm --name "{{ app_name }}" -- start --watch
+    chdir: "{{ app_dir }}/{{ app_name }}"
+  register: pm2_start
+  # pm2 refuses to start a second copy with the same name, so a re-run is not a change
+  failed_when: pm2_start.rc != 0 and 'already launched' not in pm2_start.stderr ~ pm2_start.stdout
+  changed_when: pm2_start.rc == 0

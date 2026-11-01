@@ -1,0 +1,28 @@
+---
+# tasks file for roles/webserver
+- name: Install Apache and PHP
+  ansible.builtin.apt:
+    name:
+      - apache2
+      - php
+      - libapache2-mod-php
+    state: present
+    update_cache: true
+
+- name: Deploy Apache configuration
+  ansible.builtin.template:
+    src: apache2.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+    mode: '0644'
+  notify: Restart Apache
+
+- name: Enable Apache site
+  ansible.builtin.command: a2ensite 000-default
+  register: a2ensite
+  changed_when: "'already enabled' not in a2ensite.stdout"
+
+- name: Deploy phpinfo.php for testing PHP
+  ansible.builtin.copy:
+    src: phpinfo.php
+    dest: "{{ apache_document_root }}/phpinfo.php"
+    mode: '0644'

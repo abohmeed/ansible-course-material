@@ -1,0 +1,7 @@
+# Assignment: Create a role for installing and configuring Nginx (Section 3) - solution
+---
+- name: Deploy Nginx web server with IP restrictions
+  hosts: my_hosts
+  become: true
+  roles:
+    - nginx-role

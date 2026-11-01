@@ -1,0 +1,5 @@
+# What a value encrypted with "ansible-vault encrypt_string" looks like in a vars file.
+# This one is a placeholder: generate your own with the command in README.md.
+mysql_root_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  <paste the output of ansible-vault encrypt_string here>

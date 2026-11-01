@@ -1,4 +1,6 @@
-work
+# Deploying an ASP.NET application (Section 5)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section05-windows/winrm/roles/aspnet/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 ### Create the role
 
@@ -30,40 +32,40 @@ Add the following files:
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to ASP.NET Framework</title>
+    <title>Welcome to ASP.NET Framework</title>
 </head>
 <body>
-    <h1>Welcome to ASP.NET Framework!</h1>
-    <p>
-        <asp:Literal ID="Message" runat="server"></asp:Literal>
-    </p>
+    <h1>Welcome to ASP.NET Framework!</h1>
+    <p>
+        <asp:Literal ID="Message" runat="server"></asp:Literal>
+    </p>
 </body>
 </html>
 
 <script runat="server">
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        // Dynamically generate a welcome message based on the time of day
-        var hour = DateTime.Now.Hour;
-        string message;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        // Dynamically generate a welcome message based on the time of day
+        var hour = DateTime.Now.Hour;
+        string message;
 
-        if (hour < 12)
-            message = "Good Morning!";
-        else if (hour < 18)
-            message = "Good Afternoon!";
-        else
-            message = "Good Evening!";
+        if (hour < 12)
+            message = "Good Morning!";
+        else if (hour < 18)
+            message = "Good Afternoon!";
+        else
+            message = "Good Evening!";
 
-        // Assign the message to the Literal control
-        Message.Text = message + " The current time is " + DateTime.Now.ToString("hh:mm tt");
-    }
+        // Assign the message to the Literal control
+        Message.Text = message + " The current time is " + DateTime.Now.ToString("hh:mm tt");
+    }
 </script>
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
-  <system.web>
-    <compilation debug="true" targetFramework="4.7.2" />
-    <httpRuntime targetFramework="4.7.2" />
-  </system.web>
+  <system.web>
+    <compilation debug="true" targetFramework="4.7.2" />
+    <httpRuntime targetFramework="4.7.2" />
+  </system.web>
 </configuration>
 ```
 
@@ -74,24 +76,24 @@ Add the following files:
 # tasks file for roles/aspnet
 - name: Install IIS
   win_feature:
-    name:
-      - Web-Server               # IIS Web Server
-      - Web-Mgmt-Tools           # Management Tools
-      - Web-Net-Ext              # .NET Framework Extensions
-      - Web-Asp-Net45            # ASP.NET 4.5 (optional for .NET Framework apps)
-      - Web-Net-Ext45            # .NET Framework 4.5 Extensions
+    name:
+      - Web-Server               # IIS Web Server
+      - Web-Mgmt-Tools           # Management Tools
+      - Web-Net-Ext              # .NET Framework Extensions
+      - Web-Asp-Net45            # ASP.NET 4.5 (optional for .NET Framework apps)
+      - Web-Net-Ext45            # .NET Framework 4.5 Extensions
 
 - name: Deploy ASP.NET Framework application
   win_copy:
-    src: SampleAspNetFrameworkApp
-    dest: "{{ app_path }}"
+    src: SampleAspNetFrameworkApp
+    dest: "{{ app_path }}"
 
 - name: Add application to Default Web Site
   community.windows.win_iis_webapplication:
-    name: "{{ app_name }}"
-    site: "Default Web Site"
-    physical_path: "{{ app_path }}\\SampleAspNetFrameworkApp"
-    state: present
+    name: "{{ app_name }}"
+    site: "Default Web Site"
+    physical_path: "{{ app_path }}\\SampleAspNetFrameworkApp"
+    state: present
   notify: Restart IIS
 ```
 
@@ -102,8 +104,8 @@ Add the following files:
 # handlers file for roles/lammp_windows_setup
 - name: Restart IIS
   ansible.windows.win_service:
-    name: "w3svc"
-    state: "restarted"
+    name: "w3svc"
+    state: "restarted"
 ```
 
 ### Modify the playbook to include the new role
@@ -113,8 +115,8 @@ Add the following files:
 - name: Manage Windows user
   hosts: winhost
   roles:
-    - windows_user_management
-    - aspnet
+    - windows_user_management
+    - aspnet
 ```
 
 ### Run the playbook

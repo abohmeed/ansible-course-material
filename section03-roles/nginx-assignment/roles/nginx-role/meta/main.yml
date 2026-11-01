@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: DevCloudLab
+  description: Install Nginx and allow only listed IPs
+  license: MIT
+  min_ansible_version: "2.15"
+dependencies: []

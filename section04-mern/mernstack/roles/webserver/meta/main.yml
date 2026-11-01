@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: Ahmed Elfakharany
+  description: Node.js, Express and a React app run by pm2
+  license: MIT
+  min_ansible_version: "2.15"
+dependencies: []

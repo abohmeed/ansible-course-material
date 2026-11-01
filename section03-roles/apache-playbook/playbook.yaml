@@ -1,0 +1,10 @@
+# Lectures: Creating your own Ansible role / Publishing and downloading roles (Section 3)
+# Run: ansible-playbook -i hosts playbook.yaml
+---
+- name: Deploy Apache web server with IP restrictions
+  hosts: my_hosts
+  become: true
+  roles:
+    - apache-deployment-role # found automatically under ./roles
+    # After publishing to Galaxy you can use the published name instead:
+    # - abohmeed.apache-example-role

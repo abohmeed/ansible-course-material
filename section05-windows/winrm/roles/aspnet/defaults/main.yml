@@ -1,0 +1,4 @@
+---
+# defaults/main.yml
+app_name: "/sample"
+app_path: "C:"

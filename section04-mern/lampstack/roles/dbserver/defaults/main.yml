@@ -1,0 +1,7 @@
+---
+# defaults file for roles/dbserver
+# Throwaway lab values. Section 6 encrypts this file with Ansible Vault.
+mysql_root_password: secure_root_password
+db_name: my_database
+db_user: my_user
+db_password: secure_db_password

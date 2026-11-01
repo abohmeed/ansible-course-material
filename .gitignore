@@ -1,0 +1,11 @@
+# local inventories and secrets
+hosts
+!hosts.example
+vault_password.txt
+*.retry
+group_vars/generated_password
+# password files written by the Windows user role (<inventory_hostname>.txt)
+section05-windows/winrm/*.txt
+.DS_Store
+._*
+ansible-env/

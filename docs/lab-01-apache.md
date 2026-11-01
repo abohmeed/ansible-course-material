@@ -1,4 +1,6 @@
-Talk
+# Lab: Deploy and configure the Apache web server (Section 2)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section02-getting-started/03-lab-apache/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 ## Deploying the Apache web server
 
@@ -14,45 +16,45 @@ Let's create a new playbook and call it webserver.yaml. The file contents should
   hosts: my_hosts
   become: yes
   vars:
-    apache_document_root: /var/www/html
-    apache_server_name: mywebsite.local
-    allowed_ips:
-      - 192.168.1.10
-      - 192.168.1.20
-      - 192.168.1.30
+    apache_document_root: /var/www/html
+    apache_server_name: mywebsite.local
+    allowed_ips:
+      - 192.168.1.10
+      - 192.168.1.20
+      - 192.168.1.30
 
   tasks:
-    - name: Install Apache
-      ansible.builtin.apt:
-        name: apache2
-        state: present # do not update the package if it is already there. 'latest' will update the package even if it is there.
-        update_cache: yes
+    - name: Install Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present # do not update the package if it is already there. 'latest' will update the package even if it is there.
+        update_cache: yes
 
-    - name: Deploy Apache config template
-      ansible.builtin.template:
-        src: apache.conf.j2
-        dest: /etc/apache2/sites-available/000-default.conf
-        mode: '0644'
-        owner: root
-        group: root
-      notify: Restart Apache
+    - name: Deploy Apache config template
+      ansible.builtin.template:
+        src: apache.conf.j2
+        dest: /etc/apache2/sites-available/000-default.conf
+        mode: '0644'
+        owner: root
+        group: root
+      notify: Restart Apache
 
-    - name: Enable Apache site configuration
-      ansible.builtin.command:
-        cmd: a2ensite 000-default.conf
-      notify: Restart Apache
+    - name: Enable Apache site configuration
+      ansible.builtin.command:
+        cmd: a2ensite 000-default.conf
+      notify: Restart Apache
 
-    - name: Start and enable Apache
-      ansible.builtin.service:
-        name: apache2
-        state: started
-        enabled: true
+    - name: Start and enable Apache
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
 
   handlers:
-    - name: Restart Apache
-      ansible.builtin.service:
-        name: apache2
-        state: restarted
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
 ```
 
 Before we can run this playbook, we need to create the template that Ansible would use. Create a file called apache.conf.j2 and add the following:
@@ -62,14 +64,14 @@ ServerName {{ apache_server_name }}
 DocumentRoot {{ apache_document_root }}
 
 <Directory {{ apache_document_root }}>
-    AllowOverride None
-    Options Indexes FollowSymLinks
-    Require all denied
+    AllowOverride None
+    Options Indexes FollowSymLinks
+    Require all denied
 
-    # Allow access from specified IPs
-    {% for ip in allowed_ips %}
-    Require ip {{ ip }}
-    {% endfor %}
+    # Allow access from specified IPs
+    {% for ip in allowed_ips %}
+    Require ip {{ ip }}
+    {% endfor %}
 </Directory>
 ```
 
@@ -106,14 +108,14 @@ ServerName mywebsite.local
 DocumentRoot /var/www/html
 
 <Directory /var/www/html>
-    AllowOverride None
-    Options Indexes FollowSymLinks
-    Require all denied
+    AllowOverride None
+    Options Indexes FollowSymLinks
+    Require all denied
 
-    # Allow access from specified IPs
-        Require ip 192.168.1.10
-        Require ip 192.168.1.20
-        Require ip 192.168.1.30
-    </Directory>
+    # Allow access from specified IPs
+        Require ip 192.168.1.10
+        Require ip 192.168.1.20
+        Require ip 192.168.1.30
+    </Directory>
 ```
 

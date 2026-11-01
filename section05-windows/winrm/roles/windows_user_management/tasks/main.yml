@@ -1,0 +1,23 @@
+---
+# tasks file for roles/windows_user_management
+- name: Create a user with an auto-generated password
+  ansible.windows.win_user:
+    name: "{{ user_name }}"
+    password: "{{ generated_password }}"
+    password_never_expires: true
+    user_cannot_change_password: false
+    groups: "{{ user_groups }}"
+    state: present
+
+# First version in the video prints the password (testing only):
+# - name: Display the generated password (for testing purposes)
+#   ansible.builtin.debug:
+#     msg: "The password for {{ user_name }} is {{ generated_password }}"
+
+# More secure version: save the password to a local file instead of printing it
+- name: Save the password to a secure file locally
+  ansible.builtin.copy:
+    content: "{{ generated_password }}"
+    dest: "{{ inventory_hostname }}.txt"
+    mode: '0600'
+  delegate_to: localhost

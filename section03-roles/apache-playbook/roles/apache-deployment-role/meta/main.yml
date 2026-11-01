@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Ahmed Elfakharany
+  description: A role for deploying and configuring Apache web server
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+  galaxy_tags:
+    - apache
+    - web
+dependencies: []

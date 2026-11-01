@@ -1,0 +1,36 @@
+---
+# tasks file for roles/dbserver
+- name: Ensure required Python MySQL packages are installed
+  ansible.builtin.apt:
+    name:
+      - python3-pymysql
+      - python3-mysql.connector
+    state: present
+    update_cache: true
+
+- name: Install MySQL server
+  ansible.builtin.apt:
+    name: mysql-server
+    state: present
+  notify: Start MySQL Service
+
+# Fixed (see the Q&A on this assignment): check ~/.my.cnf, the file we deploy, not ~/.my.cnf.j2.
+- name: Check if the .my.cnf file exists
+  ansible.builtin.stat:
+    path: ~/.my.cnf
+  register: mycnf
+
+# mysql_native_password works on MySQL 8.0 (Ubuntu 24.04). MySQL 8.4+ disables it by default:
+# there, drop "WITH mysql_native_password".
+- name: Set MySQL root password and authentication
+  ansible.builtin.shell: |
+    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ mysql_root_password }}'; FLUSH PRIVILEGES;"
+  when: not mycnf.stat.exists
+  changed_when: true
+  no_log: true
+
+- name: Deploy MySQL .my.cnf for root user
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: ~/.my.cnf
+    mode: '0600'

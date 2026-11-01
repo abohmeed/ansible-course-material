@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: Ahmed Elfakharany
+  description: IIS and a sample ASP.NET Framework app
+  license: MIT
+  min_ansible_version: "2.15"
+dependencies: []

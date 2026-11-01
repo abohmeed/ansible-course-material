@@ -1,0 +1,29 @@
+---
+# tasks file for roles/apache-deployment-role
+- name: Install Apache
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+    update_cache: true
+
+- name: Deploy Apache config template
+  ansible.builtin.template:
+    src: apache.conf.j2 # the role finds the file in its templates/ directory
+    dest: /etc/apache2/sites-available/000-default.conf
+    mode: '0644'
+    owner: root
+    group: root
+  notify: Restart Apache
+
+- name: Enable Apache site configuration
+  ansible.builtin.command:
+    cmd: a2ensite 000-default.conf
+  register: a2ensite_result
+  changed_when: "'already enabled' not in a2ensite_result.stdout"
+  notify: Restart Apache
+
+- name: Start and enable Apache
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true

@@ -1,0 +1,9 @@
+# Lecture: Publishing and downloading roles from Ansible Galaxy
+# Install everything in one go:  ansible-galaxy install -r requirements.yml
+#
+# In the video the role is installed by its Galaxy name (abohmeed.apache-example-role) and deleted from Galaxy
+# at the end of the lecture, so that name no longer resolves. Publish your own copy and use
+# <your_github_user>.apache-example-role, or install the instructor's copy straight from GitHub:
+- src: https://github.com/abohmeed/apache-example-role
+  name: abohmeed.apache-example-role
+- geerlingguy.ntp

@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: Ahmed Elfakharany
+  description: Common packages and the mern service user
+  license: MIT
+  min_ansible_version: "2.15"
+dependencies: []

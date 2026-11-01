@@ -1,0 +1,23 @@
+---
+# tasks file for roles/aspnet
+- name: Install IIS
+  ansible.windows.win_feature:
+    name:
+      - Web-Server      # IIS Web Server
+      - Web-Mgmt-Tools  # Management Tools
+      - Web-Net-Ext     # .NET Framework Extensions
+      - Web-Asp-Net45   # ASP.NET 4.5 (for .NET Framework apps)
+      - Web-Net-Ext45   # .NET Framework 4.5 Extensions
+
+- name: Deploy ASP.NET Framework application
+  ansible.windows.win_copy:
+    src: SampleAspNetFrameworkApp
+    dest: "{{ app_path }}"
+
+- name: Add application to Default Web Site
+  community.windows.win_iis_webapplication:
+    name: "{{ app_name }}"
+    site: "Default Web Site"
+    physical_path: "{{ app_path }}\\SampleAspNetFrameworkApp"
+    state: present
+  notify: Restart IIS

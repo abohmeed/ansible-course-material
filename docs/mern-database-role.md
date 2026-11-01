@@ -1,4 +1,6 @@
-work
+# Creating the database role (Section 4, MERN)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section04-mern/mernstack/roles/dbserver/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 ### Create the database role
 
@@ -32,8 +34,8 @@ Let's add any handlers that this role may need.
 # handlers/main.yml
 - name: Restart MongoDB
   ansible.builtin.service:
-    name: mongod
-    state: restarted
+    name: mongod
+    state: restarted
   become: true
 ```
 
@@ -80,45 +82,45 @@ In this file, we add our installation instructions. They are taken from https://
 ```
 - name: Install pip
   apt:
-    name: python3-pip
-    state: present
+    name: python3-pip
+    state: present
 - name: Allow PIP to install packages globally
   ansible.builtin.file:
-    path: /usr/lib/python3.12/EXTERNALLY-MANAGED
-    state: absent
+    path: /usr/lib/python3.12/EXTERNALLY-MANAGED
+    state: absent
 - name: Install pymongo
   pip:
-    name: "{{ item }}"
-    state: latest
-    executable: pip3
+    name: "{{ item }}"
+    state: latest
+    executable: pip3
   loop:
-    - pymongo
-    - configparser
+    - pymongo
+    - configparser
 
 - name: Add MongoDB repository using deb822_repository
   ansible.builtin.deb822_repository:
-    name: mongodb
-    types: deb
-    uris: "https://repo.mongodb.org/apt/ubuntu"
-    components: [multiverse]
-    architectures: [amd64, arm64]
-    suites: "{{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }}"
-    signed_by: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
+    name: mongodb
+    types: deb
+    uris: "https://repo.mongodb.org/apt/ubuntu"
+    components: [multiverse]
+    architectures: [amd64, arm64]
+    suites: "{{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }}"
+    signed_by: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
 
 - name: Update apt package cache
   ansible.builtin.apt:
-    update_cache: true
+    update_cache: true
 
 - name: Install MongoDB packages
   ansible.builtin.apt:
-    name: mongodb-org
-    state: present
+    name: mongodb-org
+    state: present
 
 - name: Ensure MongoDB is enabled and started
   ansible.builtin.service:
-    name: mongod
-    state: started
-    enabled: true
+    name: mongod
+    state: started
+    enabled: true
 ```
 
 #### Configuring MongoDB
@@ -126,51 +128,51 @@ In this file, we add our installation instructions. They are taken from https://
 ```
 - name: Create MongoDB data directory
   ansible.builtin.file:
-    path: "{{ mongodb_data_path }}"
-    state: directory
-    owner: mongodb
-    group: mongodb
-    mode: '0755'
+    path: "{{ mongodb_data_path }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+    mode: '0755'
 
 - name: Template MongoDB configuration file
   ansible.builtin.template:
-    src: mongod.conf.j2
-    dest: "{{ mongodb_config_path }}"
-    owner: root
-    group: root
-    mode: '0644'
+    src: mongod.conf.j2
+    dest: "{{ mongodb_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart MongoDB
 
 - name: Check if .mongorc.js file exists
   stat:
-    path: /root/.mongorc.js
+    path: /root/.mongorc.js
   register: mongorc_file
 
 - name: Create MongoDB root user
   mongodb_user:
-    database: "admin"
-    name: "{{ mongodb_root_user }}"
-    password: "{{ mongodb_root_password }}"
-    roles: "root"
+    database: "admin"
+    name: "{{ mongodb_root_user }}"
+    password: "{{ mongodb_root_password }}"
+    roles: "root"
   when: not mongorc_file.stat.exists
 
 - name: Deploy MongoDB .mongorc.js file for root user
   template:
-    src: mongoshsrc.js.j2
-    dest: ~/.mongoshrc.js
-    mode: '0600'
+    src: mongoshsrc.js.j2
+    dest: ~/.mongoshrc.js
+    mode: '0600'
   notify:
-    - Restart MongoDB
+    - Restart MongoDB
 
 - name: Enable authentication in MongoDB
   lineinfile:
-    path: /etc/mongod.conf
-    line: "security:\n  authorization: enabled"
-    insertafter: "^#security:"
-    state: present
-    backup: yes
+    path: /etc/mongod.conf
+    line: "security:\n  authorization: enabled"
+    insertafter: "^#security:"
+    state: present
+    backup: yes
   notify:
-    - Restart MongoDB
+    - Restart MongoDB
 ```
 
 #### Calling the tasks
@@ -198,19 +200,19 @@ We must configure the playbook.yaml file to include the new database role. The f
   hosts: all
   gather_facts: no
   roles:
-    - common
+    - common
 - name: Install the web server
   become: yes
   hosts: webservers
   gather_facts: no
   roles:
-    - webserver
+    - webserver
 - name: Install and configure the database
   gather_facts: yes
   become: true
   hosts: dbservers
   roles:
-    - dbserver
+    - dbserver
 ```
 
 ### Run the playbook and verify the results
@@ -263,17 +265,17 @@ It should return:
 
 ```
 {
-  users: [
-    {
-      _id: 'admin.root',
-      userId: UUID('16455d9a-2c49-4471-a3e2-75faba559316'),
-      user: 'root',
-      db: 'admin',
-      roles: [ { role: 'root', db: 'admin' } ],
-      mechanisms: [ 'SCRAM-SHA-1', 'SCRAM-SHA-256' ]
-    }
+  users: [
+    {
+      _id: 'admin.root',
+      userId: UUID('16455d9a-2c49-4471-a3e2-75faba559316'),
+      user: 'root',
+      db: 'admin',
+      roles: [ { role: 'root', db: 'admin' } ],
+      mechanisms: [ 'SCRAM-SHA-1', 'SCRAM-SHA-256' ]
+    }
   ],
-  ok: 1
+  ok: 1
 }
 ```
 

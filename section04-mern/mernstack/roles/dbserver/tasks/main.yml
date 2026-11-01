@@ -1,0 +1,7 @@
+---
+# tasks file for roles/dbserver
+- name: Include installation tasks
+  ansible.builtin.include_tasks: install.yaml
+
+- name: Include configuration tasks
+  ansible.builtin.include_tasks: configure.yaml

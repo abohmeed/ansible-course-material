@@ -1,0 +1,4 @@
+# pip install pywinrm   (inside the same virtual environment as Ansible)
+collections:
+  - name: ansible.windows    # win_user, win_feature, win_copy, win_service
+  - name: community.windows  # win_iis_webapplication

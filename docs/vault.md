@@ -1,4 +1,6 @@
-work
+# Ansible Vault (Section 6)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section06-vault/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 We have two ways by which we can encrypt values using Ansible Vault:
 
@@ -30,14 +32,14 @@ The more interesting part is that you don't need to decrypt the file before usin
 # Ensure that we have the DB server for the LAMP stack available
 multipass list
 # Run the Ansible playbook as is
-ansible-playbook  -i inventory/hosts playbook.yaml
+ansible-playbook  -i inventory/hosts playbook.yaml
 ERROR! Attempting to decrypt but no vault secrets found
 ```
 
 We need to give the password to Ansible so that it can decrypt the Secret:
 
 ```
-ansible-playbook  -i inventory/hosts playbook.yaml --ask-vault-pass
+ansible-playbook  -i inventory/hosts playbook.yaml --ask-vault-pass
 ```
 
 Now, if we give the password, the playbook would run as expected.

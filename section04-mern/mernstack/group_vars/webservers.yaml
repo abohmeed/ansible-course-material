@@ -1,0 +1,13 @@
+# group_vars/webservers.yaml
+app_dir: "/var/www/mern-app"
+npm_packages:
+  - express
+  - create-react-app
+  # Process Management utility
+  - pm2
+app_name: my_app
+react_app:
+  title: Custom React app
+  message: "This is a sample React app managed by Ansible!"
+# Second run in "Creating the web server 02": set to true to deploy the custom App.js and App.css
+deploy_custom_page: false

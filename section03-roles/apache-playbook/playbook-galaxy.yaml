@@ -1,0 +1,8 @@
+# Same play, using the roles installed from requirements.yml
+---
+- name: Deploy Apache web server with IP restrictions
+  hosts: my_hosts
+  become: true
+  roles:
+    - abohmeed.apache-example-role
+    - geerlingguy.ntp

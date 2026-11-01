@@ -1,0 +1,8 @@
+# Section 5: Running Ansible against Windows machines
+# Lecture "Creating a Windows user": only the first role. Lecture "Deploy an ASP.NET application": both roles.
+---
+- name: Manage Windows user
+  hosts: winhost
+  roles:
+    - windows_user_management
+    - aspnet

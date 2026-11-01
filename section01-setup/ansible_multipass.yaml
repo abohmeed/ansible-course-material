@@ -1,0 +1,11 @@
+# Lecture: Multipass installation (Section 1)
+# cloud-init file used to launch every lab VM:
+#   multipass launch -n ansiblemain --cloud-init ansible_multipass.yaml
+# Replace the key below with the contents of YOUR public key (cat ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub).
+users:
+  - default
+  - name: ansibleadmin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - "paste the contents of your public key here"

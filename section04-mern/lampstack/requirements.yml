@@ -1,0 +1,2 @@
+collections:
+  - name: community.mysql   # only if you replace the shell task with mysql_user

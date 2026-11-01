@@ -1,4 +1,6 @@
-work
+# Creating a Windows user with admin privileges (Section 5)
+
+> Lecture text as attached on Udemy. The runnable, corrected files are in `section05-windows/winrm/roles/windows_user_management/`; they are updated for ansible-core 2.20 (for example `ansible_facts['distribution']` instead of `ansible_distribution`). See `../CHANGES.md`.
 
 ### Create a directory for our projects
 
@@ -41,7 +43,7 @@ user_groups:
 
 ### The tasks file
 
-​x
+x
 
 ```
 ---
@@ -49,16 +51,16 @@ user_groups:
 # tasks/main.yml
 - name: Create a user with an auto-generated password
   ansible.windows.win_user:
-    name: "{{ user_name }}"
-    password: "{{ generated_password }}"
-    password_never_expires: yes
-    user_cannot_change_password: no
-    groups: "{{ user_groups }}"
-    state: present
+    name: "{{ user_name }}"
+    password: "{{ generated_password }}"
+    password_never_expires: yes
+    user_cannot_change_password: no
+    groups: "{{ user_groups }}"
+    state: present
 
 - name: Display the generated password (for testing purposes)
   debug:
-    msg: "The password for {{ user_name }} is {{ generated_password }}"
+    msg: "The password for {{ user_name }} is {{ generated_password }}"
 ```
 
 ### The Playbook
@@ -68,7 +70,7 @@ user_groups:
 - name: Manage Windows user
   hosts: winhost
   roles:
-    - windows_user_management
+    - windows_user_management
 ```
 
 ### Running the playbook
@@ -102,18 +104,18 @@ Modify the tasks file so that the password is stored in a local file instead of 
 # tasks/main.yml
 - name: Create a user with an auto-generated password
   ansible.windows.win_user:
-    name: "{{ user_name }}"
-    password: "{{ generated_password }}"
-    password_never_expires: yes
-    user_cannot_change_password: no
-    groups: "{{ user_groups }}"
-    state: present
+    name: "{{ user_name }}"
+    password: "{{ generated_password }}"
+    password_never_expires: yes
+    user_cannot_change_password: no
+    groups: "{{ user_groups }}"
+    state: present
 # Remove the existing task and replace with the following
 - name: Save the password to a secure file locally
   copy:
-    content: "{{ generated_password }}"
-    dest: "{{ inventory_hostname }}.txt"
-    mode: '0600'
+    content: "{{ generated_password }}"
+    dest: "{{ inventory_hostname }}.txt"
+    mode: '0600'
   delegate_to: localhost
 ```
 

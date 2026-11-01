@@ -1,0 +1,23 @@
+# MERN project playbook (Section 4), final version after "Creating the database role"
+# Run: ansible-playbook -i inventory/hosts playbook.yaml
+---
+- name: Install common packages
+  become: true
+  hosts: all
+  gather_facts: true
+  roles:
+    - common
+
+- name: Install the web server
+  become: true
+  hosts: webservers
+  gather_facts: false
+  roles:
+    - webserver
+
+- name: Install and configure the database
+  become: true
+  hosts: dbservers
+  gather_facts: true   # the dbserver role reads ansible_facts['distribution_release']
+  roles:
+    - dbserver
